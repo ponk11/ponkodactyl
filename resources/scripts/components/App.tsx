@@ -1,4 +1,4 @@
-import React, { lazy } from 'react';
+import React, { lazy, useEffect } from 'react';
 import { hot } from 'react-hot-loader/root';
 import { Route, Router, Switch } from 'react-router-dom';
 import { StoreProvider } from 'easy-peasy';
@@ -39,6 +39,12 @@ setupInterceptors(history);
 
 const App = () => {
     const { PterodactylUser, SiteConfiguration } = window as ExtendedWindow;
+
+    useEffect(() => {
+        document.body.classList.add('ponk-ui');
+        return () => document.body.classList.remove('ponk-ui');
+    }, []);
+
     if (PterodactylUser && !store.getState().user.data) {
         store.getActions().user.setUserData({
             uuid: PterodactylUser.uuid,

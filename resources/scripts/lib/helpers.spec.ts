@@ -1,4 +1,4 @@
-import { hexToRgba } from '@/lib/helpers';
+import { hexToRgba, summarizeServerHealth } from '@/lib/helpers';
 
 describe('@/lib/helpers.ts', function () {
     describe('hexToRgba()', function () {
@@ -24,6 +24,26 @@ describe('@/lib/helpers.ts', function () {
             expect(hexToRgba('#fff')).toBe('#fff');
             expect(hexToRgba('#')).toBe('#');
             expect(hexToRgba('#fffffy')).toBe('#fffffy');
+        });
+    });
+
+    describe('summarizeServerHealth()', function () {
+        it('should distinguish healthy servers from flagged ones', function () {
+            expect(
+                summarizeServerHealth([
+                    { status: null },
+                    { status: 'installing' },
+                    { status: 'suspended' },
+                    { status: null, isNodeUnderMaintenance: true },
+                    { status: 'install_failed' },
+                ])
+            ).toEqual({
+                total: 5,
+                online: 1,
+                attention: 4,
+                installing: 1,
+                suspended: 1,
+            });
         });
     });
 });

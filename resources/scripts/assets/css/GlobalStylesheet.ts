@@ -14,8 +14,60 @@ export default createGlobalStyle`
     }
 
     body {
-        ${tw`font-sans bg-neutral-800 text-neutral-200`};
+        ${tw`font-sans text-neutral-200`};
+        background:
+            radial-gradient(circle at 12% 8%, rgb(72 255 158 / 0.12), transparent 28rem),
+            radial-gradient(circle at 88% 90%, rgb(183 255 92 / 0.08), transparent 24rem),
+            linear-gradient(135deg, #061a16 0%, #0b2d22 48%, #102018 100%);
+        background-attachment: fixed;
         letter-spacing: 0.015em;
+    }
+
+    body::before {
+        content: '';
+        position: fixed;
+        inset: 0;
+        pointer-events: none;
+        opacity: 0.18;
+        background-image: linear-gradient(115deg, transparent 0 49%, rgb(126 255 174 / 0.08) 50%, transparent 51%);
+        background-size: 18px 18px;
+        mix-blend-mode: screen;
+        z-index: -1;
+    }
+
+    body.ponk-chaos #logo {
+        transform: rotate(-2deg) skewX(-4deg);
+    }
+
+    body.ponk-chaos #logo a {
+        color: #b7ff5c;
+        text-shadow: 4px 2px 0 #103b2b;
+    }
+
+    body.ponk-chaos .ponk-panel {
+        filter: hue-rotate(12deg) saturate(1.12);
+    }
+
+    body.ponk-ui button {
+        border-radius: 3px;
+        transition: transform 180ms ease, box-shadow 180ms ease;
+    }
+
+    body.ponk-ui button:nth-of-type(odd) {
+        transform: translateX(2px) rotate(-0.6deg);
+    }
+
+    body.ponk-ui button:nth-of-type(3n) {
+        transform: translateY(1px) rotate(0.7deg);
+    }
+
+    body.ponk-ui button:hover {
+        transform: translate(0, -3px) rotate(1.5deg) scale(1.03);
+        box-shadow: 3px 4px 0 rgb(183 255 92 / 0.2);
+    }
+
+    body.ponk-chaos button:nth-of-type(2n) {
+        transform: translate(5px, -2px) rotate(-2deg);
     }
 
     h1, h2, h3, h4, h5, h6 {
@@ -56,7 +108,7 @@ export default createGlobalStyle`
         border-right-width: 4px;
         border-left-width: 4px;
         -webkit-border-radius: 9px 4px;
-        -webkit-box-shadow: inset 0 0 0 1px hsl(211, 10%, 53%), inset 0 0 0 4px hsl(209deg 18% 30%);
+        -webkit-box-shadow: inset 0 0 0 1px #70d69d, inset 0 0 0 4px #164b35;
     }
 
     ::-webkit-scrollbar-track-piece {

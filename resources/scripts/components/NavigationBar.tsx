@@ -1,8 +1,8 @@
 import * as React from 'react';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Link, NavLink } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faCogs, faLayerGroup, faSignOutAlt } from '@fortawesome/free-solid-svg-icons';
+import { faCogs, faDice, faLayerGroup, faSignOutAlt } from '@fortawesome/free-solid-svg-icons';
 import { useStoreState } from 'easy-peasy';
 import { ApplicationStore } from '@/state';
 import SearchContainer from '@/components/dashboard/search/SearchContainer';
@@ -33,9 +33,15 @@ const RightNavigation = styled.div`
 `;
 
 export default () => {
-    const name = useStoreState((state: ApplicationStore) => state.settings.data!.name);
     const rootAdmin = useStoreState((state: ApplicationStore) => state.user.data!.rootAdmin);
     const [isLoggingOut, setIsLoggingOut] = useState(false);
+    const [isPonked, setIsPonked] = useState(false);
+    const [ponkCount, setPonkCount] = useState(0);
+
+    useEffect(() => {
+        document.body.classList.toggle('ponk-chaos', isPonked);
+        return () => document.body.classList.remove('ponk-chaos');
+    }, [isPonked]);
 
     const onTriggerLogout = () => {
         setIsLoggingOut(true);
@@ -46,7 +52,7 @@ export default () => {
     };
 
     return (
-        <div className={'w-full bg-neutral-900 shadow-md overflow-x-auto'}>
+        <div className={'ponk-panel w-full bg-neutral-900 shadow-md overflow-x-auto'}>
             <SpinnerOverlay visible={isLoggingOut} />
             <div className={'mx-auto w-full flex items-center h-[3.5rem] max-w-[1200px]'}>
                 <div id={'logo'} className={'flex-1'}>
@@ -56,11 +62,31 @@ export default () => {
                             'text-2xl font-header font-medium px-4 no-underline text-neutral-200 hover:text-neutral-100 transition-colors duration-150'
                         }
                     >
-                        {name}
+                        <span className={'block text-xs uppercase tracking-[0.35em] text-green-300'}>
+                            the questionable panel
+                        </span>
+                        <span className={'block'}>Ponkodactyl</span>
                     </Link>
                 </div>
                 <RightNavigation className={'flex h-full items-center justify-center'}>
                     <SearchContainer />
+                    <Tooltip
+                        placement={'bottom'}
+                        content={isPonked ? 'Put the panel back (coward)' : 'Activate Ponk mode'}
+                    >
+                        <button
+                            onClick={() => {
+                                setIsPonked((value) => !value);
+                                setPonkCount((value) => value + 1);
+                            }}
+                            aria-label={'Toggle Ponk mode'}
+                        >
+                            <FontAwesomeIcon icon={faDice} />
+                            <span className={'ml-2 hidden xl:inline text-[10px] uppercase tracking-widest'}>
+                                {isPonked ? 'unponk' : 'ponk'} {ponkCount > 0 ? ponkCount : ''}
+                            </span>
+                        </button>
+                    </Tooltip>
                     <Tooltip placement={'bottom'} content={'Dashboard'}>
                         <NavLink to={'/'} exact>
                             <FontAwesomeIcon icon={faLayerGroup} />
