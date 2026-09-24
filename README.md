@@ -1,74 +1,69 @@
-[![Logo Image](https://cdn.pterodactyl.io/logos/new/pterodactyl_logo.png)](https://pterodactyl.io)
-
-![GitHub Workflow Status](https://img.shields.io/github/actions/workflow/status/pterodactyl/panel/ci.yaml?label=Tests&style=for-the-badge&branch=1.0-develop)
-![Discord](https://img.shields.io/discord/122900397965705216?label=Discord&logo=Discord&logoColor=white&style=for-the-badge)
-![GitHub Releases](https://img.shields.io/github/downloads/pterodactyl/panel/latest/total?style=for-the-badge)
-![GitHub contributors](https://img.shields.io/github/contributors/pterodactyl/panel?style=for-the-badge)
-
-# Pterodactyl Panel
-
-Pterodactyl® is a free, open-source game server management panel built with PHP, React, and Go. Designed with security
-in mind, Pterodactyl runs all game servers in isolated Docker containers while exposing a beautiful and intuitive
-UI to end users.
-
-Stop settling for less. Make game servers a first class citizen on your platform.
-
-![Image](https://cdn.pterodactyl.io/site-assets/pterodactyl_v1_demo.gif)
-
-## Documentation
-
-* [Panel Documentation](https://pterodactyl.io/panel/1.0/getting_started.html)
-* [Wings Documentation](https://pterodactyl.io/wings/1.0/installing.html)
-* [Community Guides](https://pterodactyl.io/community/about.html)
-* Or, get additional help [via Discord](https://discord.gg/pterodactyl)
-
-## Sponsors
-
-I would like to extend my sincere thanks to the following sponsors for helping fund Pterodactyl's development.
-[Interested in becoming a sponsor?](https://github.com/sponsors/pterodactyl)
-
-| Company                                                                           | About                                                                                                                                                                                                                                           |
-|-----------------------------------------------------------------------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| [**Buildurly**](https://buildurly.com/)                                           | Buildurly is a hardware procurement company. They deliver tailored, enterprise-grade hardware solutions designed around your unique needs. From sourcing to delivery, Buildurly's white-glove service ensures a seamless, worry-free, professional experience.                                                                                                                                          |
-| [**Hosturly**](https://hosturly.com/)                                             | Hosturly is an enterprise hosting provider. They provide cost-effective, high-performance, and reliable services, including VPS, Web, Dedicated, and Colocation.                                                                                |
-| [**indifferent broccoli**](https://indifferentbroccoli.com/)                      | indifferent broccoli is a game server hosting and rental company. With them, you get top-notch computer power for your gaming sessions. They destroy lag, latency, and complexity--letting you focus on the fun stuff.                         |
-| [**Infraly, LLC**](https://infraly.co/)                                           | Infraly is an infrastructure company powering the next generation of online services. Through their brands, Infraly delivers cutting-edge solutions across multiple markets. Their vertically integrated approach provides unmatched performance, scalability, and reliability, giving our customers full control.                                                                                     |
-| [**MineStrator**](https://minestrator.com/)                                       | MineStrator is a game server hosting provider. Looking for the most high-end French hosting company for your Minecraft server? More than 24,000 members on our Discord trust us. Give us a try!                                                |
-| [**Physgun**](https://physgun.com/)                                               | Physgun is a game server hosting provider. Most providers rent rack space and rebrand a panel. At Physgun, they engineer the performance, write the features, and staff the support. Physgun truly is game hosting perfected!                   |
-| [**WISP**](https://wisp.gg/)                                                      | WISP is an industry-leading SaaS platform for game server management, designed for hosting companies, gaming organizations, and enthusiasts. WISP combines modern, intuitive interfaces with powerful tools, making server deployment and administration seamless, scalable, and efficient.                                                                                                                 |
-
-
-### Supported Games
-
-Pterodactyl supports a wide variety of games by utilizing Docker containers to isolate each instance. This gives
 you the power to run game servers without bloating machines with a host of additional dependencies.
+# Ponkodactyl
 
-Some of our core supported games include:
+Ponkodactyl is a deliberately chaotic rebrand of the Pterodactyl panel: green horror vibes, absurd UI, useful dashboard tools, and enough absurd extras to make the admin panel feel like a haunted control room from a late-night Minecraft stream.
 
-* Minecraft — including Paper, Sponge, Bungeecord, Waterfall, and more
-* Rust
-* Terraria
-* Teamspeak
-* Mumble
-* Team Fortress 2
-* Counter Strike: Global Offensive
-* Garry's Mod
-* ARK: Survival Evolved
+This fork keeps the underlying Pterodactyl structure but overlays it with a louder, goofier, more feature-rich control panel experience for local hosting, experimentation, and weirdly fun server management.
 
-In addition to our standard nest of supported games, our community is constantly pushing the limits of this software
-and there are plenty more games available provided by the community. Some of these games include:
+## Highlights
 
-* Factorio
-* San Andreas: MP
-* Pocketmine MP
-* Squad
-* Xonotic
-* Starmade
-* Discord ATLBot, and most other Node.js/Python discord bots
-* [and many more...](https://eggs.pterodactyl.io)
+- Green-tinted horror aesthetic with a warped, low-visibility control-center look
+- More dashboard widgets and quick controls layered into the panel shell
+- “Ponk mode” behavior that intentionally makes the UI feel slightly cursed
+- Local dev convenience auto-login so you can inspect the full panel without the normal auth gate
+- Custom branding and metadata for the Ponkodactyl fork
+
+## Local development setup
+
+### 1) Install dependencies
+
+```bash
+composer install --no-interaction --ignore-platform-reqs
+yarn install --frozen-lockfile
+```
+
+### 2) Prepare the local database
+
+```bash
+cp .env.example .env 2>/dev/null || true
+touch database/database.sqlite
+php artisan key:generate
+php artisan migrate --force
+```
+
+### 3) Run the app
+
+```bash
+php artisan serve --host 0.0.0.0 --port 8000
+```
+
+Open http://localhost:8000 in your browser.
+
+> In local debug mode, the app will automatically sign in with the first available admin user so the full dashboard can be previewed quickly.
+
+## Default local admin
+
+If no user exists yet, the debug auto-login flow creates one automatically:
+
+- Username: `ponkadmin`
+- Email: `ponkadmin@ponkodactyl.local`
+- Password: `password`
+
+If a real admin already exists, that account is used instead.
+
+## Useful commands
+
+```bash
+php artisan test
+yarn test --runInBand resources/scripts/lib/helpers.spec.ts
+yarn tsc --noEmit
+yarn lint
+```
+
+## Notes
+
+This repository is intentionally styled as a playful, custom fork of Pterodactyl rather than a clean upstream reset. It is optimized for local experimentation, visual chaos, and practical server-panel workflows while keeping the underlying Laravel + React structure intact.
 
 ## License
 
-Pterodactyl® Copyright © 2015 - 2022 Dane Everitt and contributors.
-
-Code released under the [MIT License](./LICENSE.md).
+This project remains under the MIT-style licensing model used by the base project. See [LICENSE.md](LICENSE.md) for details.

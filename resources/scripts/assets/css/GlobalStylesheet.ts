@@ -16,9 +16,9 @@ export default createGlobalStyle`
     body {
         ${tw`font-sans text-neutral-200`};
         background:
-            radial-gradient(circle at 12% 8%, rgb(72 255 158 / 0.12), transparent 28rem),
-            radial-gradient(circle at 88% 90%, rgb(183 255 92 / 0.08), transparent 24rem),
-            linear-gradient(135deg, #061a16 0%, #0b2d22 48%, #102018 100%);
+            radial-gradient(circle at 16% 16%, rgb(148 255 196 / 0.3), transparent 26rem),
+            radial-gradient(circle at 80% 82%, rgb(90 255 162 / 0.14), transparent 20rem),
+            radial-gradient(circle at 50% 50%, rgb(6 30 20 / 0.94), rgb(4 18 12 / 1) 40%, rgb(2 9 7 / 1) 100%);
         background-attachment: fixed;
         letter-spacing: 0.015em;
     }
@@ -28,10 +28,22 @@ export default createGlobalStyle`
         position: fixed;
         inset: 0;
         pointer-events: none;
-        opacity: 0.18;
-        background-image: linear-gradient(115deg, transparent 0 49%, rgb(126 255 174 / 0.08) 50%, transparent 51%);
-        background-size: 18px 18px;
+        opacity: 0.38;
+        background:
+            linear-gradient(135deg, transparent 0 46%, rgb(125 255 181 / 0.1) 47%, transparent 48%),
+            repeating-linear-gradient(0deg, rgb(120 255 185 / 0.06), rgb(120 255 185 / 0.06) 1px, transparent 1px, transparent 7px),
+            radial-gradient(circle at center, transparent 52%, rgb(0 0 0 / 0.28) 100%);
+        background-size: 100% 100%, 100% 100%, 100% 100%;
         mix-blend-mode: screen;
+        z-index: -1;
+    }
+
+    body::after {
+        content: '';
+        position: fixed;
+        inset: 0;
+        pointer-events: none;
+        background: radial-gradient(circle at center, transparent 0%, rgb(0 0 0 / 0.22) 72%, rgb(0 0 0 / 0.5) 100%);
         z-index: -1;
     }
 

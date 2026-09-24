@@ -174,6 +174,18 @@ class LoginCheckpointControllerTest extends HttpTestCase
             ->assertJsonPath('errors.0.detail', 'The authentication token provided has expired, please refresh the page and try again.');
     }
 
+    public function testDebugModeAutomaticallySignsInTheFirstAvailableUser(): void
+    {
+        config()->set('app.debug', true);
+
+        $user = User::factory()->admin()->create();
+
+        $this->get(route('auth.login'))
+            ->assertRedirect(route('index'));
+
+        $this->assertAuthenticatedAs($user);
+    }
+
     public function testEndpointAllowsRecoveryToken(): void
     {
         $user = User::factory()->create();

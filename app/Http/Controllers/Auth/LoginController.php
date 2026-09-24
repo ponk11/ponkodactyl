@@ -14,12 +14,50 @@ use Illuminate\Database\Eloquent\ModelNotFoundException;
 class LoginController extends AbstractLoginController
 {
     /**
+     * In local development the panel should boot directly into a usable admin account so
+     * the UI can be previewed without a manual login round trip.
+     */
+    protected function resolveLocalDebugUser(): ?User
+    {
+        if (!app()->environment(['local', 'development', 'testing']) || !config('app.debug')) {
+            return null;
+        }
+
+        $user = User::query()->where('root_admin', true)->first() ?? User::query()->first();
+
+        if ($user) {
+            return $user;
+        }
+
+        return User::factory()->admin()->create([
+            'username' => 'ponkadmin',
+            'email' => 'ponkadmin@ponkodactyl.local',
+            'name_first' => 'Ponk',
+            'name_last' => 'Admin',
+        ]);
+    }
+
+    /**
      * Handle all incoming requests for the authentication routes and render the
      * base authentication view component. React will take over at this point and
      * turn the login area into an SPA.
      */
     public function index(): View
     {
+        if (!auth()->guest()) {
+            return redirect()->intended(route('index'));
+        }
+
+        if (auth()->guest()) {
+            $user = $this->resolveLocalDebugUser();
+
+            if ($user) {
+                auth()->guard()->login($user, true);
+
+                return redirect()->intended(route('index'));
+            }
+        }
+
         return view('templates/auth.core');
     }
 

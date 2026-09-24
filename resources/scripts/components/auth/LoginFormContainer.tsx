@@ -35,7 +35,10 @@ export default forwardRef<HTMLFormElement, Props>(({ title, ...props }, ref) => 
         <Form {...props} ref={ref}>
             <div css={tw`md:flex w-full bg-white shadow-lg rounded-lg p-6 md:pl-0 mx-1`}>
                 <div css={tw`flex-none select-none mb-6 md:mb-0 self-center`}>
-                    <img src={'/assets/svgs/pterodactyl.svg'} css={tw`block w-48 md:w-64 mx-auto`} />
+                    <div css={tw`mx-auto w-48 md:w-64 text-center`}>
+                        <p css={tw`text-[10px] uppercase tracking-[0.45em] text-green-600`}>the questionable panel</p>
+                        <h1 css={tw`mt-2 text-3xl font-bold text-neutral-800`}>Ponkodactyl</h1>
+                    </div>
                 </div>
                 <div css={tw`flex-1`}>{props.children}</div>
             </div>
@@ -44,7 +47,7 @@ export default forwardRef<HTMLFormElement, Props>(({ title, ...props }, ref) => 
             &copy; 2015 - {new Date().getFullYear()}&nbsp;
             <a
                 rel={'noopener nofollow noreferrer'}
-                href={'https://pterodactyl.io'}
+                href={'https://ponkodactyl.local'}
                 target={'_blank'}
                 css={tw`no-underline text-neutral-500 hover:text-neutral-300`}
             >
