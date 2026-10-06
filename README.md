@@ -17,6 +17,65 @@ This fork is based on upstream Pterodactyl `v1.15.1`.
 
 For a production panel, use `APP_ENV=production` and `APP_DEBUG=false`. Keep the database, Redis, and Wings management interfaces private to the services and administrators that require them.
 
+## Installation
+
+Ponkodactyl is a Laravel application and can be installed with Docker (recommended for most operators) or deployed manually on a VPS. Either way, a panel installation is separate from Wings; you'll need at least one reachable node running Wings before you can create servers (see [Initial Panel Checklist](#initial-panel-checklist)).
+
+### Docker Installation (Recommended)
+
+1. Copy [`docker-compose.example.yml`](docker-compose.example.yml) to `docker-compose.yml` and update the placeholder values, at minimum:
+   - `MYSQL_PASSWORD` / `MYSQL_ROOT_PASSWORD` under `x-common.database`
+   - `APP_URL`, `APP_TIMEZONE`, and `APP_SERVICE_AUTHOR` under `x-common.panel`
+   - The `mail` block if you want outgoing panel email to work
+2. Create the host directories referenced by the `panel` service volumes (by default under `/srv/pterodactyl/`):
+   ```bash
+   mkdir -p /srv/pterodactyl/{var,nginx,certs,logs}
+   ```
+3. Start the stack:
+   ```bash
+   docker compose up -d
+   ```
+4. Run the first-time setup inside the `panel` container to generate the application key, migrate/seed the database, and create an administrator account:
+   ```bash
+   docker compose exec panel php artisan p:environment:setup
+   docker compose exec panel php artisan p:environment:database
+   docker compose exec panel php artisan migrate --seed --force
+   docker compose exec panel php artisan p:user:make
+   ```
+5. Visit `APP_URL` in a browser and log in with the administrator account you just created.
+
+The official image builds from this repository's [`Dockerfile`](Dockerfile), which compiles frontend assets and the PHP application into a single production-ready container exposing ports 80/443.
+
+### Manual Installation
+
+If you'd rather run the panel directly on a host (without Docker), you'll need:
+
+1. The [Requirements](#requirements) above (PHP 8.2/8.3 with extensions, MySQL/MariaDB, Redis, a web server).
+2. The release archive (e.g. `ponkodactyl-v1.15.1.tar.gz`) extracted to your install path (for example `/var/www/pterodactyl`), or a clone of this repository if you intend to build assets yourself (see [BUILDING.md](BUILDING.md)).
+3. PHP dependencies installed with Composer:
+   ```bash
+   composer install --no-dev --optimize-autoloader
+   ```
+4. An `.env` file copied from [`.env.example`](.env.example) with your database, Redis, mail, and `APP_URL` values filled in.
+5. The application configured and database prepared:
+   ```bash
+   php artisan key:generate --force
+   php artisan migrate --seed --force
+   php artisan p:user:make
+   ```
+6. `storage/` and `bootstrap/cache/` writable by your web server user, and a web server (nginx/Apache + PHP-FPM) configured to serve `public/` over HTTPS.
+7. A queue worker and scheduler running continuously, since the panel relies on both for emails, server installs, and scheduled tasks:
+   ```bash
+   # Run under a process manager (systemd, supervisor, etc.) so it restarts if it dies.
+   php artisan queue:work --queue=high,standard,low --sleep=3 --tries=3
+   ```
+   ```cron
+   # Crontab entry for the scheduler
+   * * * * * php /var/www/pterodactyl/artisan schedule:run >> /dev/null 2>&1
+   ```
+
+Once the panel is reachable, follow the [Initial Panel Checklist](#initial-panel-checklist) to configure Locations, Nodes, and Wings before creating servers for clients.
+
 ## Panel Features
 
 ### Client Area
@@ -128,6 +187,16 @@ Review the server's install status and logs, then verify that the selected Egg, 
 ### Panel Is in Maintenance Mode
 
 Check whether an administrator intentionally enabled maintenance mode or an update stopped after entering maintenance. Review the deployment output and Laravel logs before bringing a partially updated production panel back online.
+
+## Development and Building Assets
+
+If you want to modify the frontend (React/TypeScript/Tailwind) or rebuild the compiled assets shipped in a release, see [BUILDING.md](BUILDING.md) for the Node.js/Yarn toolchain, the `yarn run watch`/`yarn run serve` workflows, and instructions for running Wings locally for development.
+
+Release archives (such as the included `ponkodactyl-v1.15.1.tar.gz`) are produced with [`build-ponkodactyl-release.sh`](build-ponkodactyl-release.sh), which builds production assets and packages the application, excluding local environment files, dependencies, and storage.
+
+## Contributing
+
+Bug reports, feature suggestions, and pull requests are welcome. See [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines, and check [CHANGELOG.md](CHANGELOG.md) for a history of notable changes in this fork.
 
 ## Security and Support
 
