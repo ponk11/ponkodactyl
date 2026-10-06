@@ -63,9 +63,9 @@ if [[ "$database_driver" != 'mysql' && "$database_driver" != 'mariadb' ]] || [[ 
     exit 1
 fi
 
-if ! tar -tzf "$archive" | grep -qx './public/assets/manifest.json' || \
-    ! tar -xOzf "$archive" ./config/app.php | grep -q "'version' => '1.15.1'" || \
-    ! tar -tzf "$archive" | grep -qx './deploy-existing-panel.sh'; then
+if ! tar -tzf "$archive" | grep -x './public/assets/manifest.json' >/dev/null || \
+    ! tar -xOzf "$archive" ./config/app.php | grep -F "'version' => '1.15.1'," >/dev/null || \
+    ! tar -tzf "$archive" | grep -x './deploy-existing-panel.sh' >/dev/null; then
     echo "This archive is missing production assets or is not a Ponkodactyl 1.15.1 build." >&2
     exit 1
 fi

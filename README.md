@@ -25,44 +25,25 @@ The panel manages users, nodes, allocations, game-server definitions, and server
 
 This fork is based on the upstream Pterodactyl `v1.15.1` tag. To update an existing panel, use a release archive; Git and Node.js do not need to be installed on the VPS.
 
-The included `deploy-existing-panel.sh` updater checks the production `.env`, confirms the configured hostname, backs up the panel files and MySQL database, overlays the release, clears caches, runs migrations, restarts queue workers, and exits maintenance mode. It preserves the existing `.env`, `APP_KEY`, storage, uploads, `vendor`, database, web-server configuration, Redis, and Wings setup. If a step fails, it stops and leaves recovery backups under `/var/backups/ponkodactyl-*`.
+The included `deploy-existing-panel.sh` backs up the panel files and database, verifies production settings, confirms the hostname, overlays the release, clears caches, runs migrations, restarts queue workers, and returns the panel from maintenance mode. It preserves the existing `.env`, `APP_KEY`, storage, uploads, `vendor`, database, Nginx configuration, Redis, and Wings setup. If a step fails, it stops and leaves recovery backups under `/var/backups/ponkodactyl-*`.
 
-1. Build the production assets and package the release from the repository root:
+### Repeatable release workflow
+
+After changing the source, run this single build command in the Codespace terminal from the repository root. It builds optimized assets and creates the release archive:
 
 ```bash
-yarn install --frozen-lockfile
-yarn build:production
-tar -czf /tmp/ponkodactyl-v1.15.1.tar.gz \
-    --exclude='./.git' --exclude='./.env*' --exclude='./vendor' --exclude='./node_modules' \
-    --exclude='./storage' --exclude='./public/storage' --exclude='./database/*.sqlite' \
-    --exclude='./bootstrap/cache/*.php' --exclude='./ponkodactyl.zip' --exclude='./ponkodactyl-*.tar.gz' \
-    -C "$PWD" .
+./build-ponkodactyl-release.sh
 ```
 
-1. Upload it from **Windows PowerShell outside the SSH session**. The archive is on your computer, not on the VPS. If you are currently at an `ubuntu@...$` prompt, type `exit` first or open another PowerShell window. The `/workspaces/ponkodactyl/...` path only exists inside the Codespace.
+Download [the archive](ponkodactyl-v1.15.1.tar.gz) and [the Windows deploy helper](deploy-ponkodactyl.ps1) into the same Windows folder, such as `Downloads`. Keep the helper there; for later releases, download only the newly built archive.
+
+From **Windows PowerShell outside the VPS SSH session**, run one command to upload and deploy the archive:
 
 ```powershell
-$archive = Join-Path $HOME 'Downloads\ponkodactyl-v1.15.1.tar.gz'
-Test-Path $archive
-scp $archive ubuntu@15.204.175.98:/tmp/
+powershell.exe -ExecutionPolicy Bypass -File "$HOME\Downloads\deploy-ponkodactyl.ps1" -Target ubuntu@15.204.175.98
 ```
 
-`Test-Path` must print `True`. If it prints `False`, find where your browser downloaded the file and update `$archive`. Enter your VPS SSH password when `scp` prompts. Then connect to the VPS and verify the transfer before deploying:
-
-```bash
-ssh ubuntu@15.204.175.98
-test -f /tmp/ponkodactyl-v1.15.1.tar.gz && sha256sum /tmp/ponkodactyl-v1.15.1.tar.gz
-```
-
-The expected SHA-256 is `57d9369dd437a92b9153d8e599fa2e3050ba307c71092cca411bd871064a7e07`.
-
-1. Only after the file exists and its hash matches, unpack it to a temporary staging directory and run the updater against the existing panel root:
-
-```bash
-sudo mkdir -p /tmp/ponkodactyl-v1.15.1
-sudo tar -xzf /tmp/ponkodactyl-v1.15.1.tar.gz -C /tmp/ponkodactyl-v1.15.1
-sudo /tmp/ponkodactyl-v1.15.1/deploy-existing-panel.sh /var/www/pterodactyl /tmp/ponkodactyl-v1.15.1.tar.gz
-```
+The helper transfers the archive, compares local and VPS checksums, extracts to a fresh temporary directory, and starts the guarded updater. It prompts for SSH/sudo credentials and asks you to type the live panel hostname before touching production. If anything fails, it stops and prints where the backups are. This is a deliberate manual deploy after you choose to release a change; it does not publish on every save. Never run `git pull`, `migrate:fresh`, or `db:seed` on the live panel.
 
 The updater requires `APP_ENV=production`, `APP_DEBUG=false`, `DB_CONNECTION=mysql` or `mariadb`, working `mysql`/`mysqldump` commands, and a MySQL root account accessible through `sudo`. It asks you to type the hostname from the existing `APP_URL` before making changes. Do not use this updater with a separate test panel or run it against a production database you have not backed up.
 
