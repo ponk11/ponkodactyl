@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#09120d">
+    <title>Ponkodactyl Demo</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <main class="login-screen" id="login-screen">
+        <section class="login-panel" aria-labelledby="login-title">
+            <a class="brand" href="./" aria-label="Ponkodactyl demo">
+                <span class="brand-mark" aria-hidden="true">P</span>
+                <span class="brand-name">PONKO<span>DACTYL</span></span>
+            </a>
+            <p class="eyebrow">Public sandbox / no real servers</p>
+            <h1 id="login-title">Step inside the panel.</h1>
+            <p class="login-copy">Sign in with a sample account to explore the client or admin workspace.</p>
+            <form id="login-form" class="login-form">
+                <label for="login-email">Email</label>
+                <input id="login-email" name="email" type="email" autocomplete="username" required>
+                <label for="login-password">Password</label>
+                <input id="login-password" name="password" type="password" autocomplete="current-password" required>
+                <p class="login-error" id="login-error" role="alert" hidden>That demo email and password do not match.</p>
+                <button class="button button-primary sign-in" type="submit">Sign in to demo</button>
+            </form>
+            <div class="sample-logins">
+                <div class="sample-login">
+                    <span class="sample-role">Client</span>
+                    <code>client@demo.test</code>
+                    <code>mossy-client</code>
+                    <button class="text-button" type="button" data-fill-login="client">Fill client login</button>
+                </div>
+                <div class="sample-login">
+                    <span class="sample-role">Admin</span>
+                    <code>admin@demo.test</code>
+                    <code>mossy-admin</code>
+                    <button class="text-button" type="button" data-fill-login="admin">Fill admin login</button>
+                </div>
+            </div>
+            <p class="privacy-note"><span aria-hidden="true">i</span> This demo saves nothing. Changes disappear when you sign out or refresh.</p>
+        </section>
+        <div class="login-aside" aria-hidden="true">
+            <div class="signal-ring"></div>
+            <p class="aside-kicker">PANEL STATUS <span>●</span> SIMULATED</p>
+            <p class="aside-quote">“Suspiciously<br>operational.”</p>
+            <div class="aside-readout"><span>WINGS CONNECTION</span><strong>NOT CONNECTED</strong></div>
+        </div>
+    </main>
+
+    <div class="app-shell" id="app-shell" hidden>
+        <header class="topbar">
+            <a class="brand" href="./" aria-label="Ponkodactyl demo home">
+                <span class="brand-mark" aria-hidden="true">P</span>
+                <span class="brand-name">PONKO<span>DACTYL</span></span>
+            </a>
+            <div class="topbar-right">
+                <span class="session-label"><span class="live-dot"></span> Isolated demo session</span>
+                <span class="user-badge" id="user-badge"></span>
+                <button class="button button-quiet" type="button" id="logout-button">Sign out</button>
+            </div>
+        </header>
+        <div class="layout">
+            <aside class="sidebar">
+                <p class="side-caption" id="side-caption"></p>
+                <nav class="nav-list" id="nav-list" aria-label="Demo pages"></nav>
+                <div class="sidebar-bottom">Sample workspace<br><span>Nothing here is connected to a live panel.</span></div>
+            </aside>
+            <main class="main-content">
+                <div class="notice" role="note"><span class="notice-mark" aria-hidden="true">DEMO</span><span>Edits are private to this browser tab and reset when you sign out or refresh. No real account or server is changed.</span></div>
+                <div id="page-content" aria-live="polite"></div>
+            </main>
+        </div>
+    </div>
+
+    <dialog class="edit-dialog" id="edit-dialog">
+        <form id="edit-form" class="edit-form">
+            <div class="dialog-heading"><div><p class="eyebrow">Local demo edit</p><h2 id="dialog-title"></h2></div><button class="close-button" type="button" id="close-dialog" aria-label="Close">×</button></div>
+            <div id="dialog-fields"></div>
+            <div class="dialog-actions"><button class="button button-quiet" type="button" id="cancel-dialog">Cancel</button><button class="button button-primary" type="submit">Save changes</button></div>
+        </form>
+    </dialog>
+    <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+    <script src="app.js" defer></script>
+</body>
+</html>
