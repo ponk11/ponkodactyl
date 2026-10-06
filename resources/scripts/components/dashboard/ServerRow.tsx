@@ -17,33 +17,56 @@ const isAlarmState = (current: number, limit: number): boolean => limit > 0 && c
 
 const Icon = memo(
     styled(FontAwesomeIcon)<{ $alarm: boolean }>`
-        ${(props) => (props.$alarm ? tw`text-red-400` : tw`text-neutral-500`)};
+        ${(props) => (props.$alarm ? tw`text-red-400` : tw`text-green-300`)};
     `,
     isEqual
 );
 
 const IconDescription = styled.p<{ $alarm: boolean }>`
     ${tw`text-sm ml-2`};
-    ${(props) => (props.$alarm ? tw`text-white` : tw`text-neutral-400`)};
+    ${(props) => (props.$alarm ? tw`text-red-100` : tw`text-neutral-200`)};
 `;
 
 const StatusIndicatorBox = styled(GreyRowBox)<{ $status: ServerPowerState | undefined }>`
     ${tw`grid grid-cols-12 gap-4 relative`};
+    padding: 15px 17px;
+    color: #d6e4da;
+    background: linear-gradient(110deg, rgb(10 31 20 / 0.96), rgb(7 18 13 / 0.96));
+    border: 1px solid #244a33;
+    border-radius: 4px;
+    box-shadow: 0 8px 22px rgb(0 0 0 / 0.16);
+    transition: background 140ms ease, border-color 140ms ease, transform 140ms ease;
+
+    &:hover {
+        background: linear-gradient(110deg, rgb(16 45 27 / 0.98), rgb(9 25 17 / 0.98));
+        border-color: #5b9b5e;
+        transform: translateY(-1px);
+    }
+
+    & .icon {
+        color: #9bed78;
+        background: #15301e;
+        border: 1px solid #2c5838;
+        box-shadow: none;
+    }
 
     & .status-bar {
-        ${tw`w-2 bg-red-500 absolute right-0 z-20 rounded-full m-1 opacity-50 transition-all duration-150`};
-        height: calc(100% - 0.5rem);
+        ${tw`absolute right-0 top-0 z-20 transition-all duration-150`};
+        width: 4px;
+        height: 100%;
+        margin: 0;
+        border-radius: 0 4px 4px 0;
 
         ${({ $status }) =>
             !$status || $status === 'offline'
-                ? tw`bg-red-500`
+                ? 'background: #d76b63;'
                 : $status === 'running'
-                ? tw`bg-green-500`
-                : tw`bg-yellow-500`};
+                ? 'background: #83e878;'
+                : 'background: #e9b44b;'};
     }
 
     &:hover .status-bar {
-        ${tw`opacity-75`};
+        filter: brightness(1.2);
     }
 `;
 
@@ -153,7 +176,7 @@ export default ({ server, className }: { server: Server; className?: string }) =
                                     {stats.cpuUsagePercent.toFixed(2)} %
                                 </IconDescription>
                             </div>
-                            <p css={tw`text-xs text-neutral-600 text-center mt-1`}>of {cpuLimit}</p>
+                            <p css={tw`text-xs text-neutral-400 text-center mt-1`}>of {cpuLimit}</p>
                         </div>
                         <div css={tw`flex-1 ml-4 sm:block hidden`}>
                             <div css={tw`flex justify-center`}>
@@ -162,7 +185,7 @@ export default ({ server, className }: { server: Server; className?: string }) =
                                     {bytesToString(stats.memoryUsageInBytes)}
                                 </IconDescription>
                             </div>
-                            <p css={tw`text-xs text-neutral-600 text-center mt-1`}>of {memoryLimit}</p>
+                            <p css={tw`text-xs text-neutral-400 text-center mt-1`}>of {memoryLimit}</p>
                         </div>
                         <div css={tw`flex-1 ml-4 sm:block hidden`}>
                             <div css={tw`flex justify-center`}>
@@ -171,7 +194,7 @@ export default ({ server, className }: { server: Server; className?: string }) =
                                     {bytesToString(stats.diskUsageInBytes)}
                                 </IconDescription>
                             </div>
-                            <p css={tw`text-xs text-neutral-600 text-center mt-1`}>of {diskLimit}</p>
+                            <p css={tw`text-xs text-neutral-400 text-center mt-1`}>of {diskLimit}</p>
                         </div>
                     </React.Fragment>
                 )}

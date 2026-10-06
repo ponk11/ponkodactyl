@@ -34,6 +34,7 @@ tar -czf "$temporary_archive" \
     --exclude='./database/*.sqlite' \
     --exclude='./bootstrap/cache/*.php' \
     --exclude='./ponkodactyl.zip' \
+    --exclude='./deploy-ponkodactyl.ps1' \
     --exclude='./ponkodactyl-*.tar.gz' \
     --exclude='./ponkodactyl-*.tar.gz.sha256' \
     -C "$project_root" .

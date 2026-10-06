@@ -59,5 +59,9 @@
 }
 
 .chart_container {
-    @apply bg-gray-600 rounded shadow-lg pt-2 border-b-4 border-gray-700 relative;
+    @apply rounded relative pt-3;
+    background: linear-gradient(145deg, rgb(13 31 20 / 0.98), rgb(7 18 13 / 0.98));
+    border: 1px solid #254b33;
+    border-bottom: 3px solid #3b7845;
+    box-shadow: 0 8px 20px rgb(0 0 0 / 0.16);
 }

@@ -8,13 +8,12 @@
         <meta name="_token" content="{{ csrf_token() }}">
 
         <link rel="apple-touch-icon" sizes="180x180" href="/favicons/apple-touch-icon.png">
-        <link rel="icon" type="image/png" href="/favicons/favicon-32x32.png" sizes="32x32">
-        <link rel="icon" type="image/png" href="/favicons/favicon-16x16.png" sizes="16x16">
+        <link rel="icon" type="image/svg+xml" href="/favicons/ponkodactyl.svg?v=1.15.1" sizes="any">
         <link rel="manifest" href="/favicons/manifest.json">
-        <link rel="mask-icon" href="/favicons/safari-pinned-tab.svg" color="#bc6e3c">
-        <link rel="shortcut icon" href="/favicons/favicon.ico">
+        <link rel="mask-icon" href="/favicons/safari-pinned-tab.svg" color="#83e878">
+        <link rel="shortcut icon" href="/favicons/ponkodactyl.svg?v=1.15.1">
         <meta name="msapplication-config" content="/favicons/browserconfig.xml">
-        <meta name="theme-color" content="#0f3d2b">
+        <meta name="theme-color" content="#0b1b14">
 
         @include('layouts.scripts')
 
@@ -25,102 +24,50 @@
             {!! Theme::css('vendor/adminlte/colors/skin-blue.min.css?t={cache-version}') !!}
             {!! Theme::css('vendor/sweetalert/sweetalert.min.css?t={cache-version}') !!}
             {!! Theme::css('vendor/animate/animate.min.css?t={cache-version}') !!}
-            {!! Theme::css('css/pterodactyl.css?t={cache-version}') !!}
+            {!! Theme::css('css/pterodactyl.css?t=' . substr(sha1_file(public_path('themes/pterodactyl/css/pterodactyl.css')), 0, 12)) !!}
             <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
             <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/ionicons/2.0.1/css/ionicons.min.css">
-
-            <!--[if lt IE 9]>
-            <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
-            <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
-            <![endif]-->
         @show
     </head>
     <body class="hold-transition skin-blue ponk-admin">
         <div class="wrapper">
-            <header class="main-header">
-                <a href="{{ route('index') }}" class="logo">
-                    <span>{{ config('app.name', 'Ponkodactyl') }}</span>
+            <header class="main-header ponk-admin-header">
+                <a href="{{ route('index') }}" class="ponk-admin-brand">
+                    <span class="ponk-admin-brand__eyebrow">THE QUESTIONABLE PANEL</span>
+                    <span class="ponk-admin-brand__title"><i class="fa fa-skull" aria-hidden="true"></i><strong>{{ config('app.name', 'Ponkodactyl') }}</strong></span>
                 </a>
-                <nav class="navbar navbar-static-top">
-                    <a href="#" class="sidebar-toggle" data-toggle="push-menu" role="button">
-                        <span class="sr-only">Toggle navigation</span>
-                        <span class="icon-bar"></span>
-                        <span class="icon-bar"></span>
-                        <span class="icon-bar"></span>
+                <div class="ponk-admin-session">
+                    <span class="ponk-admin-session__light"></span>
+                    <span><small>CONTROL CHANNEL</small><strong>Admin session live</strong></span>
+                </div>
+                <div class="ponk-admin-header__actions">
+                    <a href="{{ route('account') }}" class="ponk-admin-account">
+                        <span class="ponk-admin-avatar" aria-hidden="true">{{ strtoupper(substr(Auth::user()->name_first, 0, 1) . substr(Auth::user()->name_last, 0, 1)) }}</span>
+                        <span>{{ Auth::user()->name_first }} {{ Auth::user()->name_last }}</span>
                     </a>
-                    <div class="navbar-custom-menu">
-                        <ul class="nav navbar-nav">
-                            <li class="user-menu">
-                                <a href="{{ route('account') }}">
-                                    <img src="https://www.gravatar.com/avatar/{{ md5(strtolower(Auth::user()->email)) }}?s=160" class="user-image" alt="User Image">
-                                    <span class="hidden-xs">{{ Auth::user()->name_first }} {{ Auth::user()->name_last }}</span>
-                                </a>
-                            </li>
-                            <li><a href="{{ route('index') }}" data-toggle="tooltip" data-placement="bottom" title="Exit Admin Control" aria-label="Exit admin control"><i class="fa fa-server"></i></a></li>
-                            <li><a href="{{ route('auth.logout') }}" id="logoutButton" data-toggle="tooltip" data-placement="bottom" title="Logout" aria-label="Logout"><i class="fa fa-sign-out"></i></a></li>
-                        </ul>
-                    </div>
-                </nav>
+                    <a href="{{ route('index') }}" class="ponk-admin-utility" title="Exit admin control" aria-label="Exit admin control"><i class="fa fa-server"></i><span>Client panel</span></a>
+                    <a href="{{ route('auth.logout') }}" id="logoutButton" class="ponk-admin-utility" title="Logout" aria-label="Logout"><i class="fa fa-sign-out"></i><span>Logout</span></a>
+                </div>
             </header>
-            <aside class="main-sidebar">
-                <section class="sidebar">
-                    <ul class="sidebar-menu">
-                        <li class="header">BASIC ADMINISTRATION</li>
-                        <li class="{{ Route::currentRouteName() !== 'admin.index' ?: 'active' }}">
-                            <a href="{{ route('admin.index') }}">
-                                <i class="fa fa-home"></i> <span>Overview</span>
-                            </a>
-                        </li>
-                        <li class="{{ ! starts_with(Route::currentRouteName(), 'admin.settings') ?: 'active' }}">
-                            <a href="{{ route('admin.settings')}}">
-                                <i class="fa fa-wrench"></i> <span>Settings</span>
-                            </a>
-                        </li>
-                        <li class="{{ ! starts_with(Route::currentRouteName(), 'admin.api') ?: 'active' }}">
-                            <a href="{{ route('admin.api.index')}}">
-                                <i class="fa fa-gamepad"></i> <span>Application API</span>
-                            </a>
-                        </li>
-                        <li class="header">MANAGEMENT</li>
-                        <li class="{{ ! starts_with(Route::currentRouteName(), 'admin.databases') ?: 'active' }}">
-                            <a href="{{ route('admin.databases') }}">
-                                <i class="fa fa-database"></i> <span>Databases</span>
-                            </a>
-                        </li>
-                        <li class="{{ ! starts_with(Route::currentRouteName(), 'admin.locations') ?: 'active' }}">
-                            <a href="{{ route('admin.locations') }}">
-                                <i class="fa fa-globe"></i> <span>Locations</span>
-                            </a>
-                        </li>
-                        <li class="{{ ! starts_with(Route::currentRouteName(), 'admin.nodes') ?: 'active' }}">
-                            <a href="{{ route('admin.nodes') }}">
-                                <i class="fa fa-sitemap"></i> <span>Nodes</span>
-                            </a>
-                        </li>
-                        <li class="{{ ! starts_with(Route::currentRouteName(), 'admin.servers') ?: 'active' }}">
-                            <a href="{{ route('admin.servers') }}">
-                                <i class="fa fa-server"></i> <span>Servers</span>
-                            </a>
-                        </li>
-                        <li class="{{ ! starts_with(Route::currentRouteName(), 'admin.users') ?: 'active' }}">
-                            <a href="{{ route('admin.users') }}">
-                                <i class="fa fa-users"></i> <span>Users</span>
-                            </a>
-                        </li>
-                        <li class="header">SERVICE MANAGEMENT</li>
-                        <li class="{{ ! starts_with(Route::currentRouteName(), 'admin.mounts') ?: 'active' }}">
-                            <a href="{{ route('admin.mounts') }}">
-                                <i class="fa fa-magic"></i> <span>Mounts</span>
-                            </a>
-                        </li>
-                        <li class="{{ ! starts_with(Route::currentRouteName(), 'admin.nests') ?: 'active' }}">
-                            <a href="{{ route('admin.nests') }}">
-                                <i class="fa fa-th-large"></i> <span>Nests</span>
-                            </a>
-                        </li>
-                    </ul>
-                </section>
-            </aside>
+            @php($currentRoute = Route::currentRouteName() ?? '')
+            <nav class="ponk-admin-nav" aria-label="Administration">
+                <div class="ponk-admin-nav__group" aria-label="Control">
+                    <a href="{{ route('admin.index') }}" class="ponk-admin-nav__link {{ $currentRoute === 'admin.index' ? 'active' : '' }}" @if($currentRoute === 'admin.index') aria-current="page" @endif><i class="fa fa-home"></i><span>Overview</span></a>
+                    <a href="{{ route('admin.settings') }}" class="ponk-admin-nav__link {{ starts_with($currentRoute, 'admin.settings') ? 'active' : '' }}" @if(starts_with($currentRoute, 'admin.settings')) aria-current="page" @endif><i class="fa fa-wrench"></i><span>Settings</span></a>
+                    <a href="{{ route('admin.api.index') }}" class="ponk-admin-nav__link {{ starts_with($currentRoute, 'admin.api') ? 'active' : '' }}" @if(starts_with($currentRoute, 'admin.api')) aria-current="page" @endif><i class="fa fa-gamepad"></i><span>API</span></a>
+                </div>
+                <div class="ponk-admin-nav__group" aria-label="Infrastructure">
+                    <a href="{{ route('admin.databases') }}" class="ponk-admin-nav__link {{ starts_with($currentRoute, 'admin.databases') ? 'active' : '' }}" @if(starts_with($currentRoute, 'admin.databases')) aria-current="page" @endif><i class="fa fa-database"></i><span>Databases</span></a>
+                    <a href="{{ route('admin.locations') }}" class="ponk-admin-nav__link {{ starts_with($currentRoute, 'admin.locations') ? 'active' : '' }}" @if(starts_with($currentRoute, 'admin.locations')) aria-current="page" @endif><i class="fa fa-globe"></i><span>Locations</span></a>
+                    <a href="{{ route('admin.nodes') }}" class="ponk-admin-nav__link {{ starts_with($currentRoute, 'admin.nodes') ? 'active' : '' }}" @if(starts_with($currentRoute, 'admin.nodes')) aria-current="page" @endif><i class="fa fa-sitemap"></i><span>Nodes</span></a>
+                    <a href="{{ route('admin.servers') }}" class="ponk-admin-nav__link {{ starts_with($currentRoute, 'admin.servers') ? 'active' : '' }}" @if(starts_with($currentRoute, 'admin.servers')) aria-current="page" @endif><i class="fa fa-server"></i><span>Servers</span></a>
+                    <a href="{{ route('admin.users') }}" class="ponk-admin-nav__link {{ starts_with($currentRoute, 'admin.users') ? 'active' : '' }}" @if(starts_with($currentRoute, 'admin.users')) aria-current="page" @endif><i class="fa fa-users"></i><span>Users</span></a>
+                </div>
+                <div class="ponk-admin-nav__group" aria-label="Game configuration">
+                    <a href="{{ route('admin.mounts') }}" class="ponk-admin-nav__link {{ starts_with($currentRoute, 'admin.mounts') ? 'active' : '' }}" @if(starts_with($currentRoute, 'admin.mounts')) aria-current="page" @endif><i class="fa fa-magic"></i><span>Mounts</span></a>
+                    <a href="{{ route('admin.nests') }}" class="ponk-admin-nav__link {{ starts_with($currentRoute, 'admin.nests') ? 'active' : '' }}" @if(starts_with($currentRoute, 'admin.nests')) aria-current="page" @endif><i class="fa fa-th-large"></i><span>Nests</span></a>
+                </div>
+            </nav>
             <div class="content-wrapper">
                 <section class="content-header">
                     @yield('content-header')

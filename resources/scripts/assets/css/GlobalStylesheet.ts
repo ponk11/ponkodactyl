@@ -48,6 +48,29 @@ export default createGlobalStyle`
         z-index: -1;
     }
 
+    .ponk-brand-mark {
+        display: grid;
+        width: 38px;
+        height: 38px;
+        flex: 0 0 38px;
+        place-items: center;
+        color: #b7ff5c;
+        background: radial-gradient(circle at 35% 28%, #285c36, #102419 68%);
+        border: 1px solid #4e9256;
+        border-radius: 11px 11px 15px 11px;
+        box-shadow: inset 0 0 0 3px rgb(4 15 9 / 0.6), 0 0 15px rgb(108 220 104 / 0.16);
+        font-size: 17px;
+    }
+
+    .ponk-brand-mark svg {
+        filter: drop-shadow(0 1px 3px rgb(183 255 92 / 0.35));
+    }
+
+    body.ponk-chaos .ponk-brand-mark {
+        transform: rotate(-8deg);
+        box-shadow: inset 0 0 0 3px rgb(4 15 9 / 0.6), 0 0 18px rgb(183 255 92 / 0.42);
+    }
+
     .ponk-server-console {
         max-width: 1320px;
         margin: 0 auto;
@@ -284,17 +307,10 @@ export default createGlobalStyle`
         margin-bottom: 14px;
     }
 
-    .ponk-server-graphs > div:not(.ponk-server-panel-heading) {
+    .ponk-server-graph-grid {
         display: grid;
         grid-template-columns: repeat(3, minmax(0, 1fr));
         gap: 10px;
-    }
-
-    .ponk-server-graphs .chart_container {
-        min-width: 0;
-        background: #102019;
-        border-bottom-color: #43824d;
-        box-shadow: none;
     }
 
     @media (max-width: 1000px) {
@@ -350,7 +366,7 @@ export default createGlobalStyle`
             grid-template-columns: repeat(2, minmax(0, 1fr));
         }
 
-        .ponk-server-graphs > div:not(.ponk-server-panel-heading) {
+        .ponk-server-graph-grid {
             grid-template-columns: minmax(0, 1fr);
         }
     }

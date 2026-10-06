@@ -7,10 +7,15 @@ param(
     [ValidatePattern('^/[A-Za-z0-9._/-]+$')]
     [string] $PanelPath = '/var/www/pterodactyl',
 
-    [string] $ArchivePath = (Join-Path $PSScriptRoot 'ponkodactyl-v1.15.1.tar.gz')
+    [string] $ArchivePath
 )
 
 $ErrorActionPreference = 'Stop'
+
+if ([string]::IsNullOrWhiteSpace($ArchivePath)) {
+    $scriptDirectory = Split-Path -Parent $MyInvocation.MyCommand.Path
+    $ArchivePath = Join-Path $scriptDirectory 'ponkodactyl-v1.15.1.tar.gz'
+}
 
 if (-not (Test-Path -LiteralPath $ArchivePath -PathType Leaf)) {
     throw "Release archive not found: $ArchivePath"

@@ -2,7 +2,7 @@ import * as React from 'react';
 import { useEffect, useState } from 'react';
 import { Link, NavLink } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faCogs, faDice, faLayerGroup, faSignOutAlt } from '@fortawesome/free-solid-svg-icons';
+import { faCogs, faDice, faLayerGroup, faSignOutAlt, faSkull } from '@fortawesome/free-solid-svg-icons';
 import { useStoreState } from 'easy-peasy';
 import { ApplicationStore } from '@/state';
 import SearchContainer from '@/components/dashboard/search/SearchContainer';
@@ -59,13 +59,16 @@ export default () => {
                     <Link
                         to={'/'}
                         className={
-                            'text-2xl font-header font-medium px-4 no-underline text-neutral-200 hover:text-neutral-100 transition-colors duration-150'
+                            'flex items-center gap-3 px-4 font-header font-medium text-neutral-200 no-underline transition-colors duration-150 hover:text-neutral-100'
                         }
                     >
-                        <span className={'block text-xs uppercase tracking-[0.35em] text-green-300'}>
-                            the questionable panel
+                        <span className={'ponk-brand-mark'} aria-hidden={'true'}>
+                            <FontAwesomeIcon icon={faSkull} />
                         </span>
-                        <span className={'block'}>Ponkodactyl</span>
+                        <span className={'min-w-0'}>
+                            <span className={'block text-xs uppercase text-green-300'}>the questionable panel</span>
+                            <span className={'block'}>Ponkodactyl</span>
+                        </span>
                     </Link>
                 </div>
                 <RightNavigation className={'flex h-full items-center justify-center'}>

@@ -30,7 +30,7 @@ const ServerConsoleContainer = () => {
     const statusLabel = (status || 'offline').replace(/_/g, ' ');
 
     return (
-        <ServerContentBlock title={'Server Bay'}>
+        <ServerContentBlock title={'Dashboard'}>
             <div className={'ponk-server-console'}>
                 {(isNodeUnderMaintenance || isInstalling || isTransferring) && (
                     <Alert type={'warning'} className={'mb-5'}>
@@ -127,9 +127,11 @@ const ServerConsoleContainer = () => {
                             <h2>Resource history</h2>
                         </div>
                     </header>
-                    <Spinner.Suspense>
-                        <StatGraphs />
-                    </Spinner.Suspense>
+                    <div className={'ponk-server-graph-grid'}>
+                        <Spinner.Suspense>
+                            <StatGraphs />
+                        </Spinner.Suspense>
+                    </div>
                 </section>
                 <Features enabled={eggFeatures} />
             </div>

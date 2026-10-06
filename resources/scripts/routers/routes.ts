@@ -70,7 +70,7 @@ export default {
         {
             path: '/',
             permission: null,
-            name: 'Console',
+            name: 'Dashboard',
             component: ServerConsole,
             exact: true,
         },
