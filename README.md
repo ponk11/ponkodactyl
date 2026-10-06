@@ -23,13 +23,37 @@ The panel manages users, nodes, allocations, game-server definitions, and server
 
 ## Existing Panel Upgrade
 
-If Ponkodactyl is replacing the panel already serving your domain, this is an upgrade of that panel, not a second installation. Keep its existing `.env`, `APP_KEY`, database, storage, web-server configuration, queue workers, and Wings node. Do not create a new database or run `migrate:fresh` for an in-place upgrade. Back up the panel files, `.env`, storage, and database first, verify the installed panel version is compatible with this branch, then deploy the fork into the existing panel web root and run its migrations once.
+This fork is based on the upstream Pterodactyl `v1.15.1` tag. To update an existing panel, use a release archive; Git and Node.js do not need to be installed on the VPS.
 
-Compatibility warning: this checkout's changelog currently tops out at Pterodactyl `v1.12.3`. Do not replace a panel reporting a newer or custom version (such as `1.15.1`) until you have confirmed its source lineage and tested the fork against a backup of its database. Matching PHP or Laravel versions alone does not prove database compatibility.
+The included `deploy-existing-panel.sh` updater checks the production `.env`, confirms the configured hostname, backs up the panel files and MySQL database, overlays the release, clears caches, runs migrations, restarts queue workers, and exits maintenance mode. It preserves the existing `.env`, `APP_KEY`, storage, uploads, `vendor`, database, web-server configuration, Redis, and Wings setup. If a step fails, it stops and leaves recovery backups under `/var/backups/ponkodactyl-*`.
 
-Some Pterodactyl installs are deployed from release archives and do not contain a `.git` directory; that is normal. In that case, compare the installed `CHANGELOG.md` and `composer.lock` with this fork instead of relying on `git remote` or the `config/app.php` version label alone.
+1. Build the production assets and package the release from the repository root:
 
-For a public panel, keep `APP_ENV=production` and `APP_DEBUG=false`, and retain the current `APP_URL` and database connection. Never use the local preview auto-login settings on a public host. Do not run two active panels against the same database or Wings node.
+```bash
+yarn install --frozen-lockfile
+yarn build:production
+tar -czf /tmp/ponkodactyl-v1.15.1.tar.gz \
+    --exclude='./.git' --exclude='./.env*' --exclude='./vendor' --exclude='./node_modules' \
+    --exclude='./storage' --exclude='./public/storage' --exclude='./database/*.sqlite' \
+    --exclude='./bootstrap/cache/*.php' --exclude='./ponkodactyl.zip' --exclude='./ponkodactyl-*.tar.gz' \
+    -C "$PWD" .
+```
+
+1. From Windows PowerShell, upload that archive to the VPS (replace the local download path and SSH host as needed):
+
+```powershell
+scp "$HOME\Downloads\ponkodactyl-v1.15.1.tar.gz" ubuntu@your-vps:/tmp/
+```
+
+1. On the VPS, unpack only to a temporary staging directory, then run the included updater against the existing panel root:
+
+```bash
+sudo mkdir -p /tmp/ponkodactyl-v1.15.1
+sudo tar -xzf /tmp/ponkodactyl-v1.15.1.tar.gz -C /tmp/ponkodactyl-v1.15.1
+sudo /tmp/ponkodactyl-v1.15.1/deploy-existing-panel.sh /var/www/pterodactyl /tmp/ponkodactyl-v1.15.1.tar.gz
+```
+
+The updater requires `APP_ENV=production`, `APP_DEBUG=false`, `DB_CONNECTION=mysql` or `mariadb`, working `mysql`/`mysqldump` commands, and a MySQL root account accessible through `sudo`. It asks you to type the hostname from the existing `APP_URL` before making changes. Do not use this updater with a separate test panel or run it against a production database you have not backed up.
 
 ## Isolated Test VPS Install
 
@@ -176,7 +200,7 @@ php artisan migrate --force
 php artisan serve --host 0.0.0.0 --port 8000
 ```
 
-Open http://localhost:8000 in your browser. In local debug mode, visiting the login route signs in the local preview administrator and redirects to the dashboard.
+Open `http://localhost:8000` in your browser. In local debug mode, visiting the login route signs in the local preview administrator and redirects to the dashboard.
 
 When running in a Codespace or remote container, use the **Ports** panel to open forwarded port `8000` in the browser. The container's `localhost` is not the same as your desktop's `localhost`.
 

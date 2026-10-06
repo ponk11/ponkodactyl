@@ -10,7 +10,7 @@ return [
     | change this value if you are not maintaining your own internal versions.
     */
 
-    'version' => 'canary',
+    'version' => '1.15.1',
 
     /*
     |--------------------------------------------------------------------------
@@ -71,7 +71,7 @@ return [
     |
     | Here you may specify the default timezone for your application, which
     | will be used by the PHP date and date-time functions. The timezone
-    | is set to "UTC" by default as it is suitable for most use cases.
+        'version' => '1.15.1',
     |
     */
 
