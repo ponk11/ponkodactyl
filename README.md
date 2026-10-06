@@ -39,13 +39,24 @@ tar -czf /tmp/ponkodactyl-v1.15.1.tar.gz \
     -C "$PWD" .
 ```
 
-1. From Windows PowerShell, upload that archive to the VPS (replace the local download path and SSH host as needed):
+1. Upload it from **Windows PowerShell outside the SSH session**. The archive is on your computer, not on the VPS. If you are currently at an `ubuntu@...$` prompt, type `exit` first or open another PowerShell window. The `/workspaces/ponkodactyl/...` path only exists inside the Codespace.
 
 ```powershell
-scp "$HOME\Downloads\ponkodactyl-v1.15.1.tar.gz" ubuntu@your-vps:/tmp/
+$archive = Join-Path $HOME 'Downloads\ponkodactyl-v1.15.1.tar.gz'
+Test-Path $archive
+scp $archive ubuntu@15.204.175.98:/tmp/
 ```
 
-1. On the VPS, unpack only to a temporary staging directory, then run the included updater against the existing panel root:
+`Test-Path` must print `True`. If it prints `False`, find where your browser downloaded the file and update `$archive`. Enter your VPS SSH password when `scp` prompts. Then connect to the VPS and verify the transfer before deploying:
+
+```bash
+ssh ubuntu@15.204.175.98
+test -f /tmp/ponkodactyl-v1.15.1.tar.gz && sha256sum /tmp/ponkodactyl-v1.15.1.tar.gz
+```
+
+The expected SHA-256 is `57d9369dd437a92b9153d8e599fa2e3050ba307c71092cca411bd871064a7e07`.
+
+1. Only after the file exists and its hash matches, unpack it to a temporary staging directory and run the updater against the existing panel root:
 
 ```bash
 sudo mkdir -p /tmp/ponkodactyl-v1.15.1
