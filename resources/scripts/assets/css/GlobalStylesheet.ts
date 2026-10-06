@@ -15,6 +15,7 @@ export default createGlobalStyle`
 
     body {
         ${tw`font-sans text-neutral-200`};
+        min-height: 100vh;
         background:
             radial-gradient(circle at 16% 16%, rgb(148 255 196 / 0.3), transparent 26rem),
             radial-gradient(circle at 80% 82%, rgb(90 255 162 / 0.14), transparent 20rem),

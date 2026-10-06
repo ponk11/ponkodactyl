@@ -98,7 +98,7 @@
                 </table>
             </div>
             <div class="box-footer">
-                <a href="{{ route('admin.nests.egg.new') }}"><button class="btn btn-success btn-sm pull-right">New Egg</button></a>
+                <a href="{{ route('admin.nests.egg.new') }}" class="btn btn-success btn-sm pull-right">New Egg</a>
             </div>
         </div>
     </div>

@@ -185,7 +185,9 @@ export default () => {
                         css={tw`rounded border border-green-300 border-opacity-30 bg-black bg-opacity-20 p-3`}
                     >
                         <p css={tw`text-[10px] uppercase tracking-[0.24em] text-neutral-400`}>{stat.label}</p>
-                        <p css={tw`mt-2 text-2xl font-semibold ${stat.accent}`}>{stat.value}</p>
+                        <p css={tw`mt-2 text-2xl font-semibold`} className={stat.accent}>
+                            {stat.value}
+                        </p>
                     </div>
                 ))}
             </div>
@@ -196,11 +198,12 @@ export default () => {
                             key={mode}
                             type={'button'}
                             onClick={() => setFocusMode(mode)}
-                            css={tw`px-3 py-2 text-[10px] uppercase tracking-[0.24em] border ${
+                            css={tw`px-3 py-2 text-[10px] uppercase tracking-[0.24em] border`}
+                            className={
                                 focusMode === mode
                                     ? 'border-green-400 bg-green-900 bg-opacity-60 text-green-100'
                                     : 'border-neutral-600 bg-neutral-900 bg-opacity-40 text-neutral-300'
-                            }`}
+                            }
                         >
                             {mode === 'all' ? 'all servers' : mode === 'online' ? 'online only' : 'needs attention'}
                         </button>

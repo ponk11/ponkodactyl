@@ -5,49 +5,68 @@
 @endsection
 
 @section('content-header')
-    <h1>Administrative Overview<small>A quick glance at your system.</small></h1>
-    <ol class="breadcrumb">
-        <li><a href="{{ route('admin.index') }}">Admin</a></li>
-        <li class="active">Index</li>
-    </ol>
+    <div class="ponk-admin-hero">
+        <div>
+            <p class="ponk-admin-kicker">Operations // keep one eye open</p>
+            <h1>Control room</h1>
+        </div>
+        <div class="ponk-admin-build {{ $version->isLatestPanel() ? 'is-current' : 'is-outdated' }}">
+            <span class="ponk-admin-build__light"></span>
+            <span><small>BUILD STATUS</small><strong>{{ $version->isLatestPanel() ? 'Suspiciously current' : 'Update available' }}</strong></span>
+        </div>
+    </div>
 @endsection
 
 @section('content')
-<div class="row">
-    <div class="col-xs-12">
-        <div class="box
-            @if($version->isLatestPanel())
-                box-success
-            @else
-                box-danger
-            @endif
-        ">
-            <div class="box-header with-border">
-                <h3 class="box-title">System Information</h3>
-            </div>
-            <div class="box-body">
-                @if ($version->isLatestPanel())
-                    You are running Ponkodactyl version <code>{{ config('app.version') }}</code>. Your panel is suspiciously up-to-date!
-                @else
-                    Your panel is <strong>not up-to-date!</strong> The latest version is <a href="https://github.com/Pterodactyl/Panel/releases/v{{ $version->getPanel() }}" target="_blank"><code>{{ $version->getPanel() }}</code></a> and you are currently running version <code>{{ config('app.version') }}</code>. You can find instructions on how to update your panel <a href="https://pterodactyl.io/panel/1.0/updating.html">here</a>.
-                @endif
+<section class="ponk-admin-metrics" aria-label="Panel totals">
+    <a class="ponk-admin-metric" href="{{ route('admin.servers') }}">
+        <span class="ponk-admin-metric__label"><i class="fa fa-server"></i> Servers</span>
+        <strong>{{ $stats['servers'] }}</strong>
+    </a>
+    <a class="ponk-admin-metric" href="{{ route('admin.nodes') }}">
+        <span class="ponk-admin-metric__label"><i class="fa fa-sitemap"></i> Nodes</span>
+        <strong>{{ $stats['nodes'] }}</strong>
+    </a>
+    <a class="ponk-admin-metric" href="{{ route('admin.users') }}">
+        <span class="ponk-admin-metric__label"><i class="fa fa-users"></i> Users</span>
+        <strong>{{ $stats['users'] }}</strong>
+    </a>
+    <a class="ponk-admin-metric" href="{{ route('admin.locations') }}">
+        <span class="ponk-admin-metric__label"><i class="fa fa-globe"></i> Locations</span>
+        <strong>{{ $stats['locations'] }}</strong>
+    </a>
+</section>
+
+<div class="ponk-admin-workbench">
+    <section class="ponk-admin-workbench__actions">
+        <div class="ponk-admin-section-heading">
+            <div>
+                <p class="ponk-admin-kicker">FAST PATHS</p>
+                <h2>Make something happen</h2>
             </div>
         </div>
-    </div>
-</div>
-<div class="row">
-    <div class="col-xs-6 col-sm-3 text-center">
-        <a href="{{ $version->getDiscord() }}"><button class="btn btn-warning" style="width:100%;"><i class="fa fa-fw fa-support"></i> Get Help <small>(via Discord)</small></button></a>
-    </div>
-    <div class="col-xs-6 col-sm-3 text-center">
-        <a href="https://pterodactyl.io"><button class="btn btn-primary" style="width:100%;"><i class="fa fa-fw fa-link"></i> Documentation</button></a>
-    </div>
-    <div class="clearfix visible-xs-block">&nbsp;</div>
-    <div class="col-xs-6 col-sm-3 text-center">
-        <a href="https://github.com/pterodactyl/panel"><button class="btn btn-primary" style="width:100%;"><i class="fa fa-fw fa-support"></i> GitHub</button></a>
-    </div>
-    <div class="col-xs-6 col-sm-3 text-center">
-        <a href="{{ $version->getDonations() }}"><button class="btn btn-success" style="width:100%;"><i class="fa fa-fw fa-money"></i> Support the Project</button></a>
-    </div>
+        <div class="ponk-admin-action-grid">
+            <a class="ponk-admin-action" href="{{ route('admin.locations') }}"><i class="fa fa-globe"></i><span><strong>Set up a location</strong></span><b aria-hidden="true">&rsaquo;</b></a>
+            <a class="ponk-admin-action" href="{{ route('admin.nodes.new') }}"><i class="fa fa-sitemap"></i><span><strong>Add a node</strong></span><b aria-hidden="true">&rsaquo;</b></a>
+            <a class="ponk-admin-action" href="{{ route('admin.servers.new') }}"><i class="fa fa-server"></i><span><strong>Provision a server</strong></span><b aria-hidden="true">&rsaquo;</b></a>
+            <a class="ponk-admin-action" href="{{ route('admin.users.new') }}"><i class="fa fa-user-plus"></i><span><strong>Create a user</strong></span><b aria-hidden="true">&rsaquo;</b></a>
+            <a class="ponk-admin-action" href="{{ route('admin.nests.new') }}"><i class="fa fa-leaf"></i><span><strong>Add a nest</strong></span><b aria-hidden="true">&rsaquo;</b></a>
+            <a class="ponk-admin-action" href="{{ route('admin.api.new') }}"><i class="fa fa-key"></i><span><strong>Create an API key</strong></span><b aria-hidden="true">&rsaquo;</b></a>
+        </div>
+    </section>
+    <aside class="ponk-admin-workbench__status">
+        <p class="ponk-admin-kicker">SYSTEM NOTE</p>
+        <h2>Current build</h2>
+        <p>
+            @if ($version->isLatestPanel())
+                Ponkodactyl <code>{{ config('app.version') }}</code> is suspiciously up-to-date.
+            @else
+                The latest panel release is <a href="https://github.com/pterodactyl/panel/releases/v{{ $version->getPanel() }}" target="_blank" rel="noopener noreferrer"><code>{{ $version->getPanel() }}</code></a>. You are running <code>{{ config('app.version') }}</code>.
+            @endif
+        </p>
+        <a class="ponk-admin-status-link" href="https://pterodactyl.io" target="_blank" rel="noopener noreferrer"><i class="fa fa-book"></i> Open the docs</a>
+        <a class="ponk-admin-status-link" href="{{ $version->getDiscord() }}" target="_blank" rel="noopener noreferrer"><i class="fa fa-comments"></i> Ask for help</a>
+        <a class="ponk-admin-status-link" href="https://github.com/pterodactyl/panel" target="_blank" rel="noopener noreferrer"><i class="fa fa-github"></i> Inspect upstream</a>
+    </aside>
 </div>
 @endsection

@@ -1,10 +1,13 @@
 <?php
 
+$localDebug = in_array(env('APP_ENV', 'production'), ['local', 'development', 'testing'], true)
+    && (bool) env('APP_DEBUG', false);
+
 return [
     /*
      * Enable or disable captchas
      */
-    'enabled' => env('RECAPTCHA_ENABLED', true),
+    'enabled' => env('RECAPTCHA_ENABLED', !$localDebug),
 
     /*
      * API endpoint for recaptcha checks. You should not edit this.

@@ -9,6 +9,7 @@ use Pterodactyl\Models\User;
 use Illuminate\Http\JsonResponse;
 use Pterodactyl\Facades\Activity;
 use Illuminate\Contracts\View\View;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 class LoginController extends AbstractLoginController
@@ -42,7 +43,7 @@ class LoginController extends AbstractLoginController
      * base authentication view component. React will take over at this point and
      * turn the login area into an SPA.
      */
-    public function index(): View
+    public function index(): View|RedirectResponse
     {
         if (!auth()->guest()) {
             return redirect()->intended(route('index'));
